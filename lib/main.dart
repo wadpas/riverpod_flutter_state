@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Riverpod',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.cyan,
@@ -27,10 +27,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-final currentDate = Provider<DateTime>(
-  (ref) => DateTime.now(),
-);
-
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
 
@@ -40,17 +36,45 @@ class HomePage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Hooks Riverpod'),
+        title: const Text('Riverpod'),
       ),
       body: Center(
-        child: Text(
-          date.toIso8601String(),
-          style: Theme.of(context).textTheme.displayLarge,
+        child: Column(
+          children: [
+            Text(
+              date.toIso8601String(),
+            ),
+            ElevatedButton(
+              onPressed: ref.read(counterProvider.notifier).increment,
+              child: const Text('Counter'),
+            ),
+            Consumer(
+              builder: (context, ref, child) {
+                final count = ref.watch(counterProvider);
+                final text =
+                    count == null ? 'Press the button' : count.toString();
+                return Text(text);
+              },
+            )
+          ],
         ),
       ),
     );
   }
 }
+
+class Counter extends StateNotifier<int?> {
+  Counter() : super(null);
+  void increment() => state = state == null ? 1 : state + 1;
+}
+
+final counterProvider = StateNotifierProvider<Counter, int?>(
+  (ref) => Counter(),
+);
+
+final currentDate = Provider<DateTime>(
+  (ref) => DateTime.now(),
+);
 
 extension InfixAddition<T extends num> on T? {
   T? operator +(T? other) {
