@@ -1,5 +1,8 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:uuid/uuid.dart';
 
 void main() {
   runApp(
@@ -32,91 +35,76 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final date = ref.watch(currentDate);
-    final currentWeather = ref.watch(weatherProvider);
-    final names = ref.watch(namesProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Riverpod'),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            names.when(
-              data: (names) {
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: names.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(
-                          names.elementAt(index),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-              error: (error, _) => const Text("The End"),
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-            currentWeather.when(
-              data: (data) => Text(data),
-              error: (error, _) => const Text("Error 😒"),
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: City.values.length,
-                itemBuilder: (context, index) {
-                  final city = City.values[index];
-                  final isSelected = city == ref.watch(cityProvider);
-                  return ListTile(
-                    title: Text(
-                      city.toString(),
-                    ),
-                    trailing: isSelected ? const Icon(Icons.check) : null,
-                    onTap: () {
-                      ref.read(cityProvider.notifier).state = city;
-                    },
-                  );
-                },
-              ),
-            ),
-            ElevatedButton(
-              onPressed: ref.read(counterProvider.notifier).increment,
-              child: const Text('Counter'),
-            ),
-            Consumer(
-              builder: (context, ref, child) {
-                final count = ref.watch(counterProvider);
-                final text =
-                    count == null ? 'Press the button' : count.toString();
-                return Text(text);
-              },
-            ),
-            Text(
-              date.toIso8601String(),
-            ),
-          ],
-        ),
-      ),
+      body: Center(),
     );
   }
 }
 
-const names = [
-  'Mary',
-  'Marie',
-  'Mariam',
-  'Marina',
-  'Irene',
-];
+@immutable
+class Person {
+  final String name;
+  final int age;
+  final String uuid;
+
+  Person({
+    required this.name,
+    required this.age,
+    String? uuid,
+  }) : uuid = uuid ?? const Uuid().v4();
+
+  Person updated([String? name, int? age]) => Person(
+        name: name ?? this.name,
+        age: age ?? this.age,
+        uuid: uuid,
+      );
+  String get displayName => '$name ($age years old)';
+
+  @override
+  bool operator ==(covariant Person other) => uuid == other.uuid;
+
+  @override
+  int get hashCode => Object.hash(name, age, uuid);
+}
+
+class DataModel extends ChangeNotifier {
+  final List<Person> _people = [];
+  int get count => _people.length;
+
+  UnmodifiableListView<Person> get people => UnmodifiableListView(_people);
+
+  void add(Person person) {
+    _people.add(person);
+    notifyListeners();
+  }
+
+  void remove(Person person) {
+    _people.remove(person);
+    notifyListeners();
+  }
+
+  void update(Person updatedPerson) {
+    final index = _people.indexOf(updatedPerson);
+    final oldPerson = _people[index];
+    if (oldPerson.name != updatedPerson.name ||
+        oldPerson.age != updatedPerson.age) {
+      _people[index] = oldPerson.updated(
+        updatedPerson.name,
+        updatedPerson.age,
+      );
+      notifyListeners();
+    }
+  }
+}
+
+final peopleProvider = ChangeNotifierProvider(
+  (_) => DataModel(),
+);
+
+const names = ['Mary', 'Marie', 'Mariam', 'Marina', 'Irene'];
 
 final tickerProvider = StreamProvider(
   (ref) => Stream.periodic(
@@ -169,7 +157,7 @@ final class Counter extends StateNotifier<int?> {
 }
 
 final counterProvider = StateNotifierProvider<Counter, int?>(
-  (ref) => Counter(),
+  (_) => Counter(),
 );
 
 extension InfixAddition<T extends num> on T? {
