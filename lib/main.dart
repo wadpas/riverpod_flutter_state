@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_flutter_state/current_date/current_date.dart';
 import 'package:uuid/uuid.dart';
 
 void main() {
@@ -26,6 +27,9 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const HomePage(),
+      routes: {
+        '/current_date': (context) => const CurrentDate(),
+      },
     );
   }
 }
@@ -39,28 +43,39 @@ class HomePage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Riverpod'),
       ),
-      body: Consumer(
-        builder: (context, ref, child) {
-          final dataModel = ref.watch(peopleProvider);
-          return ListView.builder(
-            itemCount: dataModel.count,
-            itemBuilder: (context, index) {
-              final person = dataModel.people[index];
-              return ListTile(
-                title: GestureDetector(
-                  child: Text(person.displayName),
-                  onTap: () async {
-                    final updatedPerson =
-                        await createOrUpdatePersonDialog(context, person);
-                    if (updatedPerson != null) {
-                      dataModel.update(updatedPerson);
-                    }
-                  },
-                ),
+      body: Column(
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed('/current_date');
+            },
+            child: const Text('Current Date'),
+          ),
+          Consumer(
+            builder: (context, ref, child) {
+              final dataModel = ref.watch(peopleProvider);
+              return ListView.builder(
+                shrinkWrap: true,
+                itemCount: dataModel.count,
+                itemBuilder: (context, index) {
+                  final person = dataModel.people[index];
+                  return ListTile(
+                    title: GestureDetector(
+                      child: Text(person.displayName),
+                      onTap: () async {
+                        final updatedPerson =
+                            await createOrUpdatePersonDialog(context, person);
+                        if (updatedPerson != null) {
+                          dataModel.update(updatedPerson);
+                        }
+                      },
+                    ),
+                  );
+                },
               );
             },
-          );
-        },
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
@@ -254,7 +269,7 @@ final class Counter extends StateNotifier<int?> {
 }
 
 final counterProvider = StateNotifierProvider<Counter, int?>(
-  (_) => Counter(),
+  (ref) => Counter(),
 );
 
 extension InfixAddition<T extends num> on T? {
@@ -267,7 +282,3 @@ extension InfixAddition<T extends num> on T? {
     }
   }
 }
-
-final currentDate = Provider<DateTime>(
-  (ref) => DateTime.now(),
-);
