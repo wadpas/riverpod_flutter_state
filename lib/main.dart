@@ -2,7 +2,8 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_flutter_state/current_date/current_date.dart';
+import 'package:riverpod_flutter_state/counter/counter_page.dart';
+import 'package:riverpod_flutter_state/current_date/date_page.dart';
 import 'package:uuid/uuid.dart';
 
 void main() {
@@ -28,7 +29,8 @@ class MyApp extends StatelessWidget {
       ),
       home: const HomePage(),
       routes: {
-        '/current_date': (context) => const CurrentDate(),
+        '/date_page': (context) => const DatePage(),
+        '/counter_page': (context) => const CounterPage(),
       },
     );
   }
@@ -44,12 +46,19 @@ class HomePage extends ConsumerWidget {
         title: const Text('Riverpod'),
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).pushNamed('/current_date');
+              Navigator.of(context).pushNamed('/date_page');
             },
-            child: const Text('Current Date'),
+            child: const Text('Date'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed('/counter_page');
+            },
+            child: const Text('Counter'),
           ),
           Consumer(
             builder: (context, ref, child) {
@@ -262,23 +271,3 @@ final weatherProvider = FutureProvider<WeatherEmoji>(
     }
   },
 );
-
-final class Counter extends StateNotifier<int?> {
-  Counter() : super(null);
-  void increment() => state = state == null ? 1 : state + 1;
-}
-
-final counterProvider = StateNotifierProvider<Counter, int?>(
-  (ref) => Counter(),
-);
-
-extension InfixAddition<T extends num> on T? {
-  T? operator +(T? other) {
-    final shadow = this;
-    if (shadow != null) {
-      return shadow + (other ?? 0) as T;
-    } else {
-      return null;
-    }
-  }
-}
