@@ -3,7 +3,8 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_flutter_state/counter/counter_page.dart';
-import 'package:riverpod_flutter_state/current_date/date_page.dart';
+import 'package:riverpod_flutter_state/date/date_page.dart';
+import 'package:riverpod_flutter_state/weather/weather_page.dart';
 import 'package:uuid/uuid.dart';
 
 void main() {
@@ -31,6 +32,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/date_page': (context) => const DatePage(),
         '/counter_page': (context) => const CounterPage(),
+        '/weather_page': (context) => const WeatherPage(),
       },
     );
   }
@@ -59,6 +61,12 @@ class HomePage extends ConsumerWidget {
               Navigator.of(context).pushNamed('/counter_page');
             },
             child: const Text('Counter'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pushNamed('/weather_page');
+            },
+            child: const Text('Weather'),
           ),
           Consumer(
             builder: (context, ref, child) {

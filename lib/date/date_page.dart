@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_flutter_state/current_date/date_state.dart';
+import 'package:riverpod_flutter_state/date/date_state.dart';
 
 class DatePage extends ConsumerWidget {
   const DatePage({super.key});
