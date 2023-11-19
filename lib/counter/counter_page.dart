@@ -7,6 +7,9 @@ class CounterPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterProvider);
+    final capital = ref.watch(capitalProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Counter'),
@@ -14,19 +17,41 @@ class CounterPage extends ConsumerWidget {
       body: SizedBox(
         width: double.infinity,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Consumer(
-              builder: (context, ref, child) {
-                final count = ref.watch(counterProvider);
-                final text =
-                    count == null ? 'Press the button' : count.toString();
-                return Text(text);
+            capital.when(
+              data: (data) => Text(
+                data,
+                style: const TextStyle(fontSize: 22),
+              ),
+              error: (error, stackTrace) => const Text('Error (('),
+              loading: () => const CircularProgressIndicator(),
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: count,
+              itemBuilder: (context, index) {
+                final country = Country.values[index];
+                final isSelected = country == ref.watch(countryProvider);
+                return ListTile(
+                  title: Text(country.toString()),
+                  trailing: isSelected ? const Icon(Icons.check) : null,
+                  onTap: () =>
+                      ref.read(countryProvider.notifier).state = country,
+                );
               },
             ),
-            ElevatedButton(
-              onPressed: ref.read(counterProvider.notifier).increment,
-              child: const Text('Increment'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ElevatedButton(
+                  onPressed: ref.read(counterProvider.notifier).increment,
+                  child: const Text('More ->'),
+                ),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Text(count.toString()),
+                )
+              ],
             ),
           ],
         ),

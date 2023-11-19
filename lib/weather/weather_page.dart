@@ -8,6 +8,7 @@ class WeatherPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final currentWeather = ref.watch(weatherProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Weather'),
