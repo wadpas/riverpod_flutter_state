@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_flutter_state/persons/person_model.dart';
 
 class DataModel extends ChangeNotifier {
-  final List<Person> _people = [];
+  final List<Person> _people = [Person(name: 'Mark', age: 22)];
 
   UnmodifiableListView<Person> get people => UnmodifiableListView(_people);
 
