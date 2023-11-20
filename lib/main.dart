@@ -1,13 +1,11 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_flutter_state/counter/counter_page.dart';
 import 'package:riverpod_flutter_state/date/date_page.dart';
 import 'package:riverpod_flutter_state/persons/person_model.dart';
 import 'package:riverpod_flutter_state/persons/persons_page.dart';
+import 'package:riverpod_flutter_state/persons/persons_state.dart';
 import 'package:riverpod_flutter_state/weather/weather_page.dart';
-import 'package:uuid/uuid.dart';
 
 void main() {
   runApp(
@@ -82,7 +80,7 @@ class HomePage extends ConsumerWidget {
               final dataModel = ref.watch(peopleProvider);
               return ListView.builder(
                 shrinkWrap: true,
-                itemCount: dataModel.count,
+                itemCount: dataModel.people.length,
                 itemBuilder: (context, index) {
                   final person = dataModel.people[index];
                   return ListTile(
@@ -181,37 +179,3 @@ Future<Person?> createOrUpdatePersonDialog(
     },
   );
 }
-
-class DataModel extends ChangeNotifier {
-  final List<Person> _people = [];
-  int get count => _people.length;
-
-  UnmodifiableListView<Person> get people => UnmodifiableListView(_people);
-
-  void add(Person person) {
-    _people.add(person);
-    notifyListeners();
-  }
-
-  void remove(Person person) {
-    _people.remove(person);
-    notifyListeners();
-  }
-
-  void update(Person updatedPerson) {
-    final index = _people.indexOf(updatedPerson);
-    final oldPerson = _people[index];
-    if (oldPerson.name != updatedPerson.name ||
-        oldPerson.age != updatedPerson.age) {
-      _people[index] = oldPerson.updated(
-        updatedPerson.name,
-        updatedPerson.age,
-      );
-      notifyListeners();
-    }
-  }
-}
-
-final peopleProvider = ChangeNotifierProvider(
-  (_) => DataModel(),
-);

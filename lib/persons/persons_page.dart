@@ -7,33 +7,13 @@ class PersonsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final names = ref.watch(namesProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Persons'),
       ),
       body: Center(
         child: Column(
-          children: [
-            names.when(
-              data: (names) {
-                return Expanded(
-                  child: ListView.builder(
-                      itemCount: names.length,
-                      itemBuilder: (context, index) {
-                        final name = names.elementAt(index);
-                        return ListTile(
-                          title: Text(name),
-                        );
-                      }),
-                );
-              },
-              error: (error, stackTrace) =>
-                  const Text('Reach the end of the list'),
-              loading: () => const CircularProgressIndicator(),
-            ),
-          ],
+          children: [],
         ),
       ),
     );
