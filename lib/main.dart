@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_flutter_state/counter/counter_page.dart';
 import 'package:riverpod_flutter_state/date/date_page.dart';
+import 'package:riverpod_flutter_state/films/films_page.dart';
 import 'package:riverpod_flutter_state/persons/persons_page.dart';
 import 'package:riverpod_flutter_state/weather/weather_page.dart';
 
@@ -32,6 +33,7 @@ class MyApp extends StatelessWidget {
         '/counter_page': (context) => const CounterPage(),
         '/weather_page': (context) => const WeatherPage(),
         '/names_page': (context) => const PersonsPage(),
+        '/films_page': (context) => const FilmsPage(),
       },
     );
   }
@@ -73,6 +75,12 @@ class HomePage extends ConsumerWidget {
                 Navigator.of(context).pushNamed('/weather_page');
               },
               child: const Text('Weather'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed('/films_page');
+              },
+              child: const Text('Films'),
             ),
           ],
         ),
