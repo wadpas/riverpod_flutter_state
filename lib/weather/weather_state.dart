@@ -1,6 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-enum City { stockholm, paris, tokyo }
+enum City { Stockholm, Paris, Tokyo }
 
 typedef WeatherEmoji = String;
 
@@ -8,9 +8,9 @@ Future<WeatherEmoji> getWeather(City city) {
   return Future.delayed(
     const Duration(seconds: 1),
     () => {
-      City.stockholm: '❄️',
-      City.paris: '🌧️',
-      City.tokyo: '💨',
+      City.Stockholm: '❄️',
+      City.Paris: '🌧️',
+      City.Tokyo: '💨',
     }[city]!,
   );
 }

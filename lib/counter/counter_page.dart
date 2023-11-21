@@ -33,7 +33,7 @@ class CounterPage extends ConsumerWidget {
                 final country = Country.values[index];
                 final isSelected = country == ref.watch(countryProvider);
                 return ListTile(
-                  title: Text(country.toString()),
+                  title: Text(country.toString().split('.').last),
                   trailing: isSelected ? const Icon(Icons.check) : null,
                   onTap: () =>
                       ref.read(countryProvider.notifier).state = country,

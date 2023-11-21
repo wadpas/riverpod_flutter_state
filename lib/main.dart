@@ -54,6 +54,12 @@ class HomePage extends ConsumerWidget {
           children: [
             ElevatedButton(
               onPressed: () {
+                Navigator.of(context).pushNamed('/films_page');
+              },
+              child: const Text('Films'),
+            ),
+            ElevatedButton(
+              onPressed: () {
                 Navigator.of(context).pushNamed('/names_page');
               },
               child: const Text('Names'),
@@ -75,12 +81,6 @@ class HomePage extends ConsumerWidget {
                 Navigator.of(context).pushNamed('/weather_page');
               },
               child: const Text('Weather'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed('/films_page');
-              },
-              child: const Text('Films'),
             ),
           ],
         ),

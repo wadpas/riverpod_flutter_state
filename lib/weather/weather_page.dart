@@ -30,7 +30,9 @@ class WeatherPage extends ConsumerWidget {
                 final city = City.values[index];
                 final isSelected = city == ref.watch(cityProvider);
                 return ListTile(
-                  title: Text(city.toString()),
+                  title: Text(
+                    city.toString().split('.').last,
+                  ),
                   trailing: isSelected ? const Icon(Icons.check) : null,
                   onTap: () {
                     ref.read(cityProvider.notifier).state = city;

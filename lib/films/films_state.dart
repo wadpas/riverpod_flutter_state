@@ -41,10 +41,10 @@ final class FilmsNotifier extends StateNotifier<List<Film>> {
   }
 }
 
-enum FavoriteStatus { all, favorite, usual }
+enum FavoriteStatus { All, Favorite, Usual }
 
 final favoriteStatusProvider = StateProvider<FavoriteStatus>(
-  (_) => FavoriteStatus.all,
+  (_) => FavoriteStatus.All,
 );
 
 final allFilmsProvider = StateNotifierProvider<FilmsNotifier, List<Film>>(
